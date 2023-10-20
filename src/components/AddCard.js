@@ -31,7 +31,7 @@ const AddCard = ({ details }) => {
         .then((result) => {
           if (result.status === 201) {
             console.log(result.data);
-            toast.success("Friend added successfully");
+            // toast.success("Friend added successfully");
             setTimeout(() => {
               window.location.reload();
             }, 2000);
@@ -43,6 +43,37 @@ const AddCard = ({ details }) => {
         .catch((err) => {
           console.log(err);
         });
+
+        axios({
+          method: "post",
+          url: "http://localhost:3001/add-friends",
+          data: {
+            id: details.id,
+            friends: {
+              id: user.uid,
+              email: user.email,
+              name: user.displayName,
+            },
+          },
+        })
+          .then((result) => {
+            console.log("user add friend", user);
+
+            if (result.status === 201) {
+              console.log(result.data);
+              toast.success("Friend added successfully");
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
+            } else {
+              console.log(result.data);
+              toast.error(result.data);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
     } else {
       toast.error("You cannot add yourself as friend");
     }

@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardHeader,
@@ -12,8 +12,16 @@ import { Textarea } from "@material-tailwind/react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import "./Cards.css"
 
 const Cards = ({ friend }) => {
+
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [text, setText] = useState([]);
+  const ref = useRef();
+
   const handleChatClick = () => {
     setOpen(true);
     axios({
@@ -31,16 +39,43 @@ const Cards = ({ friend }) => {
           console.log(result);
         } else {
           console.log("Invalid response format:", result);
-        }
+        }  
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const { user } = useAuth();
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
-  const [text, setText] = useState([]);
+
+  // function refresh(){
+  //   axios({
+  //     method: "POST",
+  //     url: "http://localhost:3001/message/get-messages",
+  //     data: {
+  //       sender_id: user.uid,
+  //       friend_id: friend.id,
+  //     },
+  //   })
+  //     .then((response) => {
+  //       const result = response.data;
+  //       if (Array.isArray(result)) {
+  //         console.log("my response",result)
+  //         setText([...text, { text: message, sent: true }]);
+  //         console.log("response rseult",result);
+  //       } else {
+  //         console.log("Invalid response format:", result);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
+
+  useEffect(() => {
+    if (text.length) {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }  
+  }, [text]);
+
 
   const handleTextAreaChange = (e) => {
     setMessage(e.target.value);
@@ -49,6 +84,9 @@ const Cards = ({ friend }) => {
     if (message === "") {
       toast.error("Messsage cannot be empty !");
     } else {
+      setText([...text, { text: message, sent: true }]);
+      console.log(text);
+
       axios({
         method: "POST",
         url: "http://localhost:3001/message/send-message",
@@ -56,19 +94,17 @@ const Cards = ({ friend }) => {
           sender_id: user.uid,
           friends: {
             id: friend.id,
-            messages: [
-              {
-                text: message,
-                timestamps: new Date(),
-                sent: true,
-              },
-            ],
+            messages: {
+              text: message,
+              timestamps: new Date(),
+              sent: true,
+            },
           },
         },
       })
         .then((result) => {
-          setText([...text, result.data]);
           console.log("resdata", result.data);
+          handleChatClick();
         })
         .catch((err) => {
           console.log(err);
@@ -80,24 +116,25 @@ const Cards = ({ friend }) => {
           sender_id: friend.id,
           friends: {
             id: user.uid,
-            messages: [
-              {
-                text: message,
-                timestamps: new Date(),
-                sent: false,
-              },
-            ],
+            messages: {
+              text: message,
+              timestamps: new Date(),
+              sent: false,
+            },
           },
         },
       })
         .then((result) => {
+          console.log("resdata", result.data);
+          setMessage("");
+          handleChatClick();
           console.log(result);
         })
         .catch((err) => {
           console.log(err);
         });
       console.log(message);
-      setMessage("");
+
     }
   };
   return (
@@ -109,20 +146,24 @@ const Cards = ({ friend }) => {
         onCancel={() => setOpen(false)}
         width={1000}
       >
-        <div className="min-h-[400px] mt-10">
-          <div className="flex flex-col h-full space-y-3">
+        <div className="min-h-[400px] max-h-[400px] mt-10 overflow-y-scroll scrollbar scrollbar-thumb-gray-700 scrollbar-track-gray-100 scrollbar-thumb-rounded-xl">
+          <div className="flex flex-col h-full space-y-3 m-5">
             {text.map((messageItem, index) => (
               <div
                 key={index}
-                className={`mb-2 rounded-xl px-2 py-1 font-semibold  ${
-                  messageItem.sent ? "text-right bg-yellow-200 " : "text-left bg-orange-200"
+                className={`mb-2 rounded-xl px-3 py-2 font-semibold ${
+                  messageItem.sent
+                    ? "text-right bg-yellow-200 max-w-sm self-end"
+                    : "text-left bg-orange-200 max-w-fit"
                 }`}
               >
                 <div className="">{messageItem.text}</div>
               </div>
             ))}
           </div>
+          <div ref={ref}></div>
         </div>
+
         <Textarea
           color="purple"
           label="Message"
