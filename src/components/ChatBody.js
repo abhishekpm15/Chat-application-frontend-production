@@ -8,7 +8,7 @@ const ChatBody = ({ showAddCard, details }) => {
   const [userFriends, setUserFriends] = useState(null);
   useEffect(() => {
     if (user) {
-      console.log("this iser id", user.uid);
+      console.log("this user id", user.uid);
       axios({
         method: "GET",
         url: `http://localhost:3001/get-friends/${user.uid}`,
