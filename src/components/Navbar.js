@@ -7,7 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { BellIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { useAuth } from "../context/AuthContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar } from "@material-tailwind/react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -15,27 +15,45 @@ import { toast } from "react-toastify";
 export function NavbarDark({ onFriendFound, details }) {
   const { user, SignUp, SignOut } = useAuth();
   const [searchValue, setSearchValue] = useState();
+  const [allUsers, setAllUsers] = useState([])
+
+  useEffect(()=>{
+    axios.get("http://localhost:3001/get-all-friends").then((response)=>{
+      console.log('all friends',response.data)
+      setAllUsers(response.data);
+    }).catch((err)=>{
+      console.log(err)
+    })
+  },[])
+
   const handleSearch = () => {
     if (searchValue !== null) {
       console.log(searchValue);
-      axios({
-        method: "GET",
-        url: `http://localhost:3001/get-user/${searchValue}`,
+      allUsers.filter((user)=>{
+        return searchValue.toLowerCase() === '' ? user : user.email.toLowerCase().includes(searchValue)
+      }).map(user=>{
+        return(
+          console.log(user)
+        )
       })
-        .then((res) => {
-          console.log(res.data);
-          if (res.data.length > 0) {
-            toast.success("User found !");
-            console.log("resdata",res.data[0]);
-            onFriendFound(true, res.data[0]);
-          } else {
-            toast.error("User not found!");
-            onFriendFound(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      // axios({
+      //   method: "GET",
+      //   url: `http://localhost:3001/get-user/${searchValue}`,
+      // })
+      //   .then((res) => {
+      //     console.log(res.data);
+      //     if (res.data.length > 0) {
+      //       toast.success("User found !");
+      //       console.log("resdata",res.data[0]);
+      //       onFriendFound(true, res.data[0]);
+      //     } else {
+      //       toast.error("User not found!");
+      //       onFriendFound(false);
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     }
   };
   return (

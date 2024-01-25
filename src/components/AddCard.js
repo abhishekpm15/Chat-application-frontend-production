@@ -58,7 +58,6 @@ const AddCard = ({ details }) => {
         })
           .then((result) => {
             console.log("user add friend", user);
-
             if (result.status === 201) {
               console.log(result.data);
               toast.success("Friend added successfully");
