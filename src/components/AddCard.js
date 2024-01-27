@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -11,20 +11,22 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
-const AddCard = ({ details }) => {
-  console.log(details);
+const AddCard = ({ friendDetails }) => {
+  console.log('friendDetails',friendDetails);
   const { user } = useAuth();
+  const [friends, setFriends] = useState([])
+ 
   const handleAddFriend = () => {
-    if (user.uid !== details.id) {
-      axios({
+    if (user.uid !== friendDetails.id) {    
+     axios({
         method: "post",
         url: "http://localhost:3001/add-friends",
         data: {
           id: user.uid,
           friends: {
-            id: details.id,
-            email: details.email,
-            name: details.name,
+            id: friendDetails.id,
+            email: friendDetails.email,
+            name: friendDetails.name,
           },
         },
       })
@@ -48,7 +50,7 @@ const AddCard = ({ details }) => {
           method: "post",
           url: "http://localhost:3001/add-friends",
           data: {
-            id: details.id,
+            id: friendDetails.id,
             friends: {
               id: user.uid,
               email: user.email,
@@ -78,7 +80,7 @@ const AddCard = ({ details }) => {
     }
   };
   return (
-    <div>
+    <div className="m-10">
       <Card className="mt-6 w-72 shadow-2xl hover:scale-110 transition duration-300">
         <CardHeader color="blue-gray" className="relative h-48 w-38">
           <img
@@ -89,9 +91,9 @@ const AddCard = ({ details }) => {
         </CardHeader>
         <CardBody>
           <Typography variant="h5" color="blue-gray" className="mb-2">
-            {details.name}
+            {friendDetails?.name}
           </Typography>
-          <Typography>{details.email}</Typography>
+          <Typography>{friendDetails?.email}</Typography>
         </CardBody>
         <CardFooter className="pt-0">
           <Button onClick={handleAddFriend}>Add Friend</Button>

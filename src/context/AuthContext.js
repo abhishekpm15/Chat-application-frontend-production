@@ -12,7 +12,7 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState('');
 
   const SignUp = () => {
     const provider = new GoogleAuthProvider();
@@ -32,7 +32,7 @@ export const AuthContextProvider = ({ children }) => {
           },
         })
           .then((data) => {
-            console.log(data);
+            console.log('user id',data);
           })
           .catch((err) => {
             console.log(err);

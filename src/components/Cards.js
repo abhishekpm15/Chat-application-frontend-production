@@ -18,6 +18,7 @@ var socket
 
 
 const Cards = ({ friend }) => {
+  console.log('friend list', friend)
   const { user } = useAuth();
   const [socketConnected, setSocketConnected] = useState(false);
   const [open, setOpen] = useState(false);
@@ -178,7 +179,7 @@ const Cards = ({ friend }) => {
         />
         <Button onClick={handleTextSend}>Send</Button>
       </Modal>
-      <Card className="mt-6 w-72 shadow-2xl hover:scale-110 transition duration-300">
+      <Card className="mt-6 w-72 shadow-2xl hover:scale-110 transition duration-300 ">
         <CardHeader color="blue-gray" className="relative h-48 w-38">
           <img
             src="https://images.unsplash.com/photo-1540553016722-983e48a2cd10?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
@@ -188,9 +189,9 @@ const Cards = ({ friend }) => {
         </CardHeader>
         <CardBody>
           <Typography variant="h5" color="blue-gray" className="mb-2">
-            {friend.name}
+            {friend?.name}
           </Typography>
-          <Typography>{friend.email}</Typography>
+          <Typography>{friend?.email}</Typography>
         </CardBody>
         <CardFooter className="pt-0">
           <Button onClick={handleChatClick}>CHAT</Button>

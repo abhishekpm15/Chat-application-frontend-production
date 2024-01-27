@@ -11,51 +11,72 @@ import React, { useEffect, useState } from "react";
 import { Avatar } from "@material-tailwind/react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useSearch } from "../context/SearchContext";
 
-export function NavbarDark({ onFriendFound, details }) {
+export function NavbarDark() {
   const { user, SignUp, SignOut } = useAuth();
-  const [searchValue, setSearchValue] = useState();
-  const [allUsers, setAllUsers] = useState([])
+  // const [searchValue, setSearchValue] = useState();
+  // const [allUsers, setAllUsers] = useState([])
+  const { searchTerm, setSearchTerm, searchFriends, setSearchFriends } = useSearch();
+  const [searchedFriends, setSearchedFriends] = useState([]);
 
-  useEffect(()=>{
-    axios.get("http://localhost:3001/get-all-friends").then((response)=>{
-      console.log('all friends',response.data)
-      setAllUsers(response.data);
-    }).catch((err)=>{
-      console.log(err)
-    })
-  },[])
+  // useEffect(()=>{
+  //   axios.get("http://localhost:3001/get-all-friends").then((response)=>{
+  //     console.log('all friends',response.data)
+  //     setAllUsers(response.data);
+  //   }).catch((err)=>{
+  //     console.log(err)
+  //   })
+  // },[])
 
-  const handleSearch = () => {
-    if (searchValue !== null) {
-      console.log(searchValue);
-      allUsers.filter((user)=>{
-        return searchValue.toLowerCase() === '' ? user : user.email.toLowerCase().includes(searchValue)
-      }).map(user=>{
-        return(
-          console.log(user)
-        )
-      })
-      // axios({
-      //   method: "GET",
-      //   url: `http://localhost:3001/get-user/${searchValue}`,
+  useEffect(() => {
+    console.log("searched friends", searchedFriends);
+    console.log('searchFriends', searchFriends)
+    if (searchedFriends.length > 0) {
+      toast.success("user found");
+      console.log(searchedFriends);
+    }
+  }, [searchedFriends]); // Ensure this dependency array is correctly set
+
+  // useEffect(() => {
+  //   console.log("searched friends", searchedFriends);
+  // }, [searchFriends]);
+
+  const handleSearch = async () => {
+    if (searchTerm !== null) {
+      // console.log(searchValue);
+      // allUsers.filter((user)=>{
+      //   return searchValue.toLowerCase() === '' ? user : user.email.toLowerCase().includes(searchValue)
+      // }).map(user=>{
+      //   return(
+      //     console.log(user)
+      //   )
       // })
-      //   .then((res) => {
-      //     console.log(res.data);
-      //     if (res.data.length > 0) {
-      //       toast.success("User found !");
-      //       console.log("resdata",res.data[0]);
-      //       onFriendFound(true, res.data[0]);
-      //     } else {
-      //       toast.error("User not found!");
-      //       onFriendFound(false);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      try {
+        const response = await axios({
+          method: "GET",
+          url: `http://localhost:3001/get-user/${searchTerm}`,
+        });
+
+        console.log("friends term", response.data);
+        const friends = response.data;
+        const friends2 = friends.filter((friend) => friend.id!== user.uid);
+        console.log('user id' , user.id)
+        setSearchFriends(friends2)
+        setSearchedFriends(friends2);
+      } catch (err) {
+        console.log(err);
+      }
+
+      // console.log('search friends end', searchFriends)
+      // if (searchFriends.length > 0) {
+      //   toast.success("User found !");
+      // } else {
+      //   toast.error("User not found!");
+      // }
     }
   };
+
   return (
     <Navbar
       variant="gradient"
@@ -68,18 +89,16 @@ export function NavbarDark({ onFriendFound, details }) {
           href="#"
           variant="h6"
           className="mr-4 ml-2 cursor-pointer py-1.5"
-        >
-        
-        </Typography>
+        ></Typography>
         <div className="relative flex w-full gap-2 md:w-max">
           <Input
             type="search"
-            value={searchValue}
+            value={searchTerm}
             color="white"
             label="Type here..."
             className="pr-20"
             onChange={(e) => {
-              setSearchValue(e.target.value);
+              setSearchTerm(e.target.value);
             }}
             containerProps={{
               className: "min-w-[288px]",

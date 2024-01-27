@@ -4,12 +4,15 @@ import { NavbarDark } from "./components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useState } from "react";
+import { SearchContextProvider } from "./context/SearchContext";
 function App() {
   const [showAddCard, setShowAddCard] = useState(false);
   const [details, setDetails] = useState(null);
+  const [search, setSearch] = useState(false)
   return (
     <div className="App">
       <ToastContainer autoClose={2000} />
+      <SearchContextProvider>
       <NavbarDark
         onFriendFound={(show, friendDetails) => {
           setShowAddCard(show);
@@ -17,7 +20,8 @@ function App() {
           setDetails(friendDetails);
         }}
       />
-      <ChatBody showAddCard={showAddCard} details={details} />
+      <ChatBody  />
+      </SearchContextProvider>
     </div>
   );
 }
