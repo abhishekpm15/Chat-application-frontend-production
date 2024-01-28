@@ -24,7 +24,7 @@ export const AuthContextProvider = ({ children }) => {
         console.log(res.user);
         axios({
           method: "POST",
-          url: `https://chat-application-backend-production.vercel.app/register/${res.user.uid}`,
+          url: `https://chat-application-backend-production-cec7.up.railway.app/register/${res.user.uid}`,
           data: {
             id: res.user.uid,
             email:res.user.email,

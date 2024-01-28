@@ -20,7 +20,7 @@ const AddCard = ({ friendDetails }) => {
     if (user.uid !== friendDetails.id) {    
      axios({
         method: "post",
-        url: "https://chat-application-backend-production.vercel.app/add-friends",
+        url: "https://chat-application-backend-production-cec7.up.railway.app/add-friends",
         data: {
           id: user.uid,
           friends: {
@@ -48,7 +48,7 @@ const AddCard = ({ friendDetails }) => {
 
         axios({
           method: "post",
-          url: "https://chat-application-backend-production.vercel.app/add-friends",
+          url: "https://chat-application-backend-production-cec7.up.railway.app/add-friends",
           data: {
             id: friendDetails.id,
             friends: {
