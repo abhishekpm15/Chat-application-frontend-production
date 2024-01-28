@@ -48,6 +48,9 @@ export const AuthContextProvider = ({ children }) => {
       .then(() => {
         setUser(null);
         toast.success("Signed out Successfully !");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
