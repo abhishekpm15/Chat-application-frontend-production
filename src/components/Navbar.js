@@ -39,11 +39,11 @@ export function NavbarDark() {
   }, [searchedFriends]); // Ensure this dependency array is correctly set
 
   // useEffect(() => {
-  //   console.log("searched friends", searchedFriends);
+  //   console.log("searchedx friends", searchedFriends);
   // }, [searchFriends]);
 
   const handleSearch = async () => {
-    if (searchTerm !== null) {
+    if (searchTerm !== "") {
       // console.log(searchValue);
       // allUsers.filter((user)=>{
       //   return searchValue.toLowerCase() === '' ? user : user.email.toLowerCase().includes(searchValue)
@@ -62,6 +62,10 @@ export function NavbarDark() {
         const friends = response.data;
         const friends2 = friends.filter((friend) => friend.id!== user.uid);
         console.log('user id' , user.id)
+        // console.log("friends2", friends2)
+        if(friends2.length === 0){
+          toast.error("User not found !")
+        }
         setSearchFriends(friends2)
         setSearchedFriends(friends2);
       } catch (err) {
@@ -72,7 +76,7 @@ export function NavbarDark() {
       // if (searchFriends.length > 0) {
       //   toast.success("User found !");
       // } else {
-      //   toast.error("User not found!");
+        // toast.error("User not found!");
       // }
     }
   };

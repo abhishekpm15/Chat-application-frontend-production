@@ -8,19 +8,13 @@ import { SearchContextProvider } from "./context/SearchContext";
 function App() {
   const [showAddCard, setShowAddCard] = useState(false);
   const [details, setDetails] = useState(null);
-  const [search, setSearch] = useState(false)
+  const [search, setSearch] = useState(false);
   return (
     <div className="App">
       <ToastContainer autoClose={2000} />
       <SearchContextProvider>
-      <NavbarDark
-        onFriendFound={(show, friendDetails) => {
-          setShowAddCard(show);
-          console.log("details",friendDetails);
-          setDetails(friendDetails);
-        }}
-      />
-      <ChatBody  />
+        <NavbarDark />
+        <ChatBody />
       </SearchContextProvider>
     </div>
   );
